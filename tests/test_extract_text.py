@@ -33,3 +33,15 @@ def test_extract_missing_file_raises():
     from scripts.extract_text import extract
     with pytest.raises(FileNotFoundError):
         extract("/nonexistent/path/file.md")
+
+def test_extract_docx_returns_string():
+    from scripts.extract_text import extract
+    result = extract(str(FIXTURE_DIR / "sample.docx"))
+    assert isinstance(result, str)
+    assert len(result) > 0
+
+def test_extract_docx_preserves_content():
+    from scripts.extract_text import extract
+    result = extract(str(FIXTURE_DIR / "sample.docx"))
+    assert "climate change" in result.lower()
+    assert "wikipedia.org" in result
