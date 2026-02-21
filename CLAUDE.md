@@ -83,16 +83,45 @@ All of the below — extraction is LLM-based so style-agnostic:
 
 Skill deployed to: `~/.claude/skills/check-citations`
 
+## Implementation Status (v1 complete)
+
+- [x] Architecture decision: Claude Code skill + Python helpers
+- [x] `scripts/extract_text.py` — markdown, txt, DOCX, PDF
+- [x] `scripts/check_url.py` — HTTP existence check, redirect following, timeout handling
+- [x] `scripts/write_report.py` — JSON + markdown dual output
+- [x] `skill/SKILL.md` — 8-phase workflow prompt deployed to `~/.claude/skills/check-citations/`
+- [x] `Makefile` — `make deploy` / `make undeploy` / `make test`
+- [x] 18 tests passing
+
+## Running
+
+```bash
+# Run tests
+make test          # or: .venv/bin/pytest tests/ -v
+
+# Deploy skill after changes
+make deploy
+
+# Use from another Claude Code session
+/check-citations path/to/document.md depth=content outdir=/tmp/
+```
+
+## Known Limitations (v1)
+
+- Python packages in `.venv/` — use `.venv/bin/python`, not system `python3`
+- PDF extraction via pdfplumber — text only, no OCR for scanned PDFs
+- Academic refs (APA/MLA) without embedded URLs marked `unverifiable`
+- Script paths in SKILL.md are hardcoded to `/home/tlarcombe/projects/check_citations/`
+
 ## Related Projects
 
-- `fact-or-fiction` — review before starting; may have overlapping logic worth reusing
+- `fact-or-fiction` — empty directory, nothing to reuse
 - `report_generator` — likely primary consumer of this utility
 - `website_orchestrator` — potential consumer
 
 ## Development Notes
 
 - Use `writing-plans` before touching code
-- Use `skill-creator` when building the skill file
 - Use `dispatching-parallel-agents` pattern for concurrent citation verification
 - Use `brainstorming` before designing any new feature
 - Test with a real document containing known-broken and known-good citations
